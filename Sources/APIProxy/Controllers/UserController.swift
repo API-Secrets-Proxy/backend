@@ -1,25 +1,25 @@
 import Fluent
 import Vapor
 
-struct TodoController: RouteCollection {
+struct UserController: RouteCollection {
     func boot(routes: any RoutesBuilder) throws {
-        let todos = routes.grouped("todos")
+        let todos = routes.grouped("users")
 
         todos.get(use: self.index)
         todos.post(use: self.create)
-        todos.group(":todoID") { todo in
+        todos.group(":userID") { todo in
             todo.delete(use: self.delete)
         }
     }
 
     @Sendable
-    func index(req: Request) async throws -> [TodoDTO] {
-        try await Todo.query(on: req.db).all().map { $0.toDTO() }
+    func index(req: Request) async throws -> [UserDTO] {
+        try await User.query(on: req.db).all().map { $0.toDTO() }
     }
 
     @Sendable
-    func create(req: Request) async throws -> TodoDTO {
-        let todo = try req.content.decode(TodoDTO.self).toModel()
+    func create(req: Request) async throws -> UserDTO {
+        let todo = try req.content.decode(UserDTO.self).toModel()
 
         try await todo.save(on: req.db)
         return todo.toDTO()
@@ -27,7 +27,7 @@ struct TodoController: RouteCollection {
 
     @Sendable
     func delete(req: Request) async throws -> HTTPStatus {
-        guard let todo = try await Todo.find(req.parameters.get("todoID"), on: req.db) else {
+        guard let todo = try await User.find(req.parameters.get("userID"), on: req.db) else {
             throw Abort(.notFound)
         }
 

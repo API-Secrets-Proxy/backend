@@ -1,0 +1,22 @@
+{
+    "configurations": [
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:backend}",
+            "name": "Debug APIProxy",
+            "program": "${workspaceFolder:backend}/.build/debug/APIProxy",
+            "preLaunchTask": "swift: Build Debug APIProxy"
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:backend}",
+            "name": "Release APIProxy",
+            "program": "${workspaceFolder:backend}/.build/release/APIProxy",
+            "preLaunchTask": "swift: Build Release APIProxy"
+        }
+    ]
+}
