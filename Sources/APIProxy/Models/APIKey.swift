@@ -18,13 +18,13 @@ final class APIKey: Model, @unchecked Sendable {
 
     init() { }
 
-    init(id: UUID? = nil, title: String, partialKey: String) {
+    init(id: UUID? = nil, name: String, partialKey: String) {
         self.id = id
-        self.name = title
+        self.name = name
         self.partialKey = partialKey
     }
     
-    func toDTO() -> UserDTO {
+    func toDTO() -> APIKeySendingDTO {
         .init(
             id: self.id,
             name: self.name

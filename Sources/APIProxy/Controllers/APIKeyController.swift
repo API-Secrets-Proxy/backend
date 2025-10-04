@@ -13,16 +13,34 @@ struct APIKeyController: RouteCollection {
     }
 
     @Sendable
-    func index(req: Request) async throws -> [UserDTO] {
-        try await User.query(on: req.db).all().map { $0.toDTO() }
+    func index(req: Request) async throws -> [APIKeySendingDTO] {
+        try await APIKey.query(on: req.db).all().map { $0.toDTO() }
     }
 
     @Sendable
-    func create(req: Request) async throws -> UserDTO {
-        let key = try req.content.decode(UserDTO.self).toModel()
+    func create(req: Request) async throws -> APIKeySendingDTO {
+        let keyDTO = try req.content.decode(APIKeyRecievingDTO.self)
+        
+        guard let name = keyDTO.name else {
+            throw Abort(.badRequest, reason: "Name not specified")
+        }
+        
+        guard let apiKey = keyDTO.apiKey else {
+            throw Abort(.badRequest, reason: "API key not included")
+        }
+        
+        let (userKey, dbKey) = try KeySplitter.split(key: apiKey)
+        
+        let key = APIKey(name: name, partialKey: dbKey)
 
         try await key.save(on: req.db)
-        return key.toDTO()
+        
+        // Construct return dto
+        var dto = key.toDTO()
+        // Add key to dto just for creation
+        dto.userPartialKey = userKey
+        
+        return dto
     }
 
     @Sendable

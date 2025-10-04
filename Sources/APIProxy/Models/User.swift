@@ -15,9 +15,9 @@ final class User: Model, @unchecked Sendable {
 
     init() { }
 
-    init(id: UUID? = nil, title: String) {
+    init(id: UUID? = nil, name: String) {
         self.id = id
-        self.name = title
+        self.name = name
     }
     
     func toDTO() -> UserDTO {
