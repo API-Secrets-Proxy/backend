@@ -10,6 +10,6 @@ struct APIKeyRecievingDTO: Content {
 struct APIKeySendingDTO: Content {
     let id: UUID?
     let name: String
-    var userPartialKey: String
+    var userPartialKey: String?
     let description: String
 }

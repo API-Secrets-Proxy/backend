@@ -35,7 +35,6 @@ final class APIKey: Model, @unchecked Sendable {
         .init(
             id: self.id,
             name: self.name,
-            userPartialKey: partialKey,
             description: userDescription
         )
     }
