@@ -3,6 +3,7 @@ import Fluent
 extension Project: Migratable {
     static let migrations: [any Migration] = [
         CreateMigration(),
+        AddDescriptionMigration()
     ]
     
     struct CreateMigration: AsyncMigration {
@@ -16,6 +17,20 @@ extension Project: Migratable {
 
         func revert(on database: any Database) async throws {
             try await database.schema(Project.schema).delete()
+        }
+    }
+    
+    struct AddDescriptionMigration: AsyncMigration {
+        func prepare(on database: any Database) async throws {
+            try await database.schema(Project.schema)
+                .field("description", .string, .required, .sql(.default("")))
+                .update()
+        }
+
+        func revert(on database: any Database) async throws {
+            try await database.schema(Project.schema)
+                .deleteField("description")
+                .update()
         }
     }
 }

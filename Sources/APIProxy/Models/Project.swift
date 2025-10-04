@@ -13,6 +13,9 @@ final class Project: Model, @unchecked Sendable {
     @Field(key: "name")
     var name: String
 
+    @Field(key: "description")
+    var userDescription: String
+
     @Parent(key: "user_id")
     var user: User
     
@@ -21,9 +24,10 @@ final class Project: Model, @unchecked Sendable {
     
     init() { }
 
-    init(id: UUID? = nil, name: String) {
+    init(id: UUID? = nil, name: String, description: String) {
         self.id = id
         self.name = name
+        self.userDescription = description
     }
     
     func toDTO(on db: any Database) async throws -> ProjectDTO {
@@ -34,6 +38,7 @@ final class Project: Model, @unchecked Sendable {
         return .init(
             id: self.id,
             name: self.name,
+            description: userDescription,
             keys: keysDTO
         )
     }

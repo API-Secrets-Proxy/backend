@@ -12,6 +12,9 @@ final class APIKey: Model, @unchecked Sendable {
 
     @Field(key: "name")
     var name: String
+    
+    @Field(key: "description")
+    var userDescription: String
 
     @Field(key: "partial_key")
     var partialKey: String
@@ -21,16 +24,19 @@ final class APIKey: Model, @unchecked Sendable {
 
     init() { }
 
-    init(id: UUID? = nil, name: String, partialKey: String) {
+    init(id: UUID? = nil, name: String, description: String, partialKey: String) {
         self.id = id
         self.name = name
+        self.userDescription = description
         self.partialKey = partialKey
     }
     
     func toDTO() -> APIKeySendingDTO {
         .init(
             id: self.id,
-            name: self.name
+            name: self.name,
+            userPartialKey: partialKey,
+            description: userDescription
         )
     }
 }

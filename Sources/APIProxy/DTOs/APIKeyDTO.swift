@@ -2,13 +2,14 @@ import Fluent
 import Vapor
 
 struct APIKeyRecievingDTO: Content {
-    var id: UUID?
-    var name: String?
-    var apiKey: String?
+    let name: String?
+    let apiKey: String?
+    let description: String?
 }
 
 struct APIKeySendingDTO: Content {
-    var id: UUID?
-    var name: String?
-    var userPartialKey: String?
+    let id: UUID?
+    let name: String
+    var userPartialKey: String
+    let description: String
 }

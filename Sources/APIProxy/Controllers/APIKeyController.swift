@@ -31,7 +31,7 @@ struct APIKeyController: RouteCollection {
         
         let (userKey, dbKey) = try KeySplitter.split(key: apiKey)
         
-        let key = APIKey(name: name, partialKey: dbKey)
+        let key = APIKey(name: name, description: keyDTO.description ?? "", partialKey: dbKey)
         
         guard let project = try await Project.find(req.parameters.get("projectID"), on: req.db) else {
             throw Abort(.badRequest, reason: "Project Not Found")
