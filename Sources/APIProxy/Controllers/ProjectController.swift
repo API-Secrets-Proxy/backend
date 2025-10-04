@@ -1,7 +1,7 @@
 import Fluent
 import Vapor
 
-struct ProjectMigrations: RouteCollection {
+struct ProjectController: RouteCollection {
     func boot(routes: any RoutesBuilder) throws {
         let projects = routes.grouped("users", ":userID", "projects")
 
