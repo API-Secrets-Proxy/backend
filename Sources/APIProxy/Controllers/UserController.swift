@@ -3,12 +3,12 @@ import Vapor
 
 struct UserController: RouteCollection {
     func boot(routes: any RoutesBuilder) throws {
-        let todos = routes.grouped("users")
+        let users = routes.grouped("users")
 
-        todos.get(use: self.index)
-        todos.post(use: self.create)
-        todos.group(":userID") { todo in
-            todo.delete(use: self.delete)
+        users.get(use: self.index)
+        users.post(use: self.create)
+        users.group(":userID") { user in
+            user.delete(use: self.delete)
         }
     }
 
@@ -19,19 +19,19 @@ struct UserController: RouteCollection {
 
     @Sendable
     func create(req: Request) async throws -> UserDTO {
-        let todo = try req.content.decode(UserDTO.self).toModel()
+        let user = try req.content.decode(UserDTO.self).toModel()
 
-        try await todo.save(on: req.db)
-        return todo.toDTO()
+        try await user.save(on: req.db)
+        return user.toDTO()
     }
 
     @Sendable
     func delete(req: Request) async throws -> HTTPStatus {
-        guard let todo = try await User.find(req.parameters.get("userID"), on: req.db) else {
+        guard let user = try await User.find(req.parameters.get("userID"), on: req.db) else {
             throw Abort(.notFound)
         }
 
-        try await todo.delete(on: req.db)
+        try await user.delete(on: req.db)
         return .noContent
     }
 }
