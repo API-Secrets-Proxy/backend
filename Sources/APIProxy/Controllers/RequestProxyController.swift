@@ -31,6 +31,8 @@ struct RequestProxyController: RouteCollection {
         headers.remove(name: ProxyHeaderKeys.destination)
         headers.remove(name: ProxyHeaderKeys.httpMethod)
         headers.remove(name: ProxyHeaderKeys.associationId)
+        headers.remove(name: "X-Apple-Device-Token")
+        headers.remove(name: "Host")
         
         // Get Full Key
         guard let dbKey = try await APIKey.find(UUID(uuidString: associationId), on: req.db) else {
