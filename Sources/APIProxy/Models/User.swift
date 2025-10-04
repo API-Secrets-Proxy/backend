@@ -12,6 +12,9 @@ final class User: Model, @unchecked Sendable {
 
     @Field(key: "name")
     var name: String
+    
+    @Children(for: \.$user)
+    var projects: [Project]
 
     init() { }
 

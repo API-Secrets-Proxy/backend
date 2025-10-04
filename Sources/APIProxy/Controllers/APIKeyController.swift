@@ -3,7 +3,7 @@ import Vapor
 
 struct APIKeyController: RouteCollection {
     func boot(routes: any RoutesBuilder) throws {
-        let keys = routes.grouped("keys")
+        let keys = routes.grouped("users", ":userID", "projects", ":projectID", "keys")
 
         keys.get(use: self.index)
         keys.post(use: self.create)
@@ -32,6 +32,12 @@ struct APIKeyController: RouteCollection {
         let (userKey, dbKey) = try KeySplitter.split(key: apiKey)
         
         let key = APIKey(name: name, partialKey: dbKey)
+        
+        guard let project = try await Project.find(req.parameters.get("projectID"), on: req.db) else {
+            throw Abort(.badRequest, reason: "Project Not Found")
+        }
+
+        key.$project.id = try project.requireID()
 
         try await key.save(on: req.db)
         
