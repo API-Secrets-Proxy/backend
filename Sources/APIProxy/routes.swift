@@ -13,4 +13,5 @@ app.get { req async in
     try app.register(collection: UserController())
     try app.register(collection: APIKeyController())
     try app.register(collection: ProjectController())
+    try app.register(collection: RequestProxyController())
 }
