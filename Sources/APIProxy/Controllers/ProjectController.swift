@@ -14,7 +14,7 @@ struct ProjectMigrations: RouteCollection {
 
     @Sendable
     func index(req: Request) async throws -> [ProjectDTO] {
-        try await Project.query(on: req.db).all().map { $0.toDTO() }
+        try await Project.query(on: req.db).all().asyncMap { try await $0.toDTO(on: req.db) }
     }
 
     @Sendable
@@ -27,7 +27,7 @@ struct ProjectMigrations: RouteCollection {
         project.$user.id = try user.requireID()
         
         try await project.save(on: req.db)
-        return project.toDTO()
+        return try await project.toDTO(on: req.db)
     }
 
     @Sendable

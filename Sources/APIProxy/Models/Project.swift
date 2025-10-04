@@ -26,10 +26,15 @@ final class Project: Model, @unchecked Sendable {
         self.name = name
     }
     
-    func toDTO() -> ProjectDTO {
-        .init(
+    func toDTO(on db: any Database) async throws -> ProjectDTO {
+        try await $apiKeys.load(on: db)
+        let keys = try await $apiKeys.get(on: db)
+        let keysDTO = keys.map({ $0.toDTO() })
+        
+        return .init(
             id: self.id,
-            name: self.name
+            name: self.name,
+            keys: keysDTO
         )
     }
 }

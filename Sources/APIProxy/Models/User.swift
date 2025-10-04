@@ -23,10 +23,29 @@ final class User: Model, @unchecked Sendable {
         self.name = name
     }
     
-    func toDTO() -> UserDTO {
-        .init(
+    func toDTO(on db: any Database) async throws -> UserDTO {
+        try await $projects.load(on: db)
+        let projects = try await $projects.get(on: db)
+        let projectsDTOs = try await projects.asyncMap({ try await $0.toDTO(on: db) })
+        
+        return .init(
             id: self.id,
-            name: self.name
+            name: self.name,
+            projects: projectsDTOs
         )
+    }
+}
+
+extension Sequence {
+    func asyncMap<T>(
+        _ transform: (Element) async throws -> T
+    ) async rethrows -> [T] {
+        var values = [T]()
+
+        for element in self {
+            try await values.append(transform(element))
+        }
+
+        return values
     }
 }

@@ -15,7 +15,7 @@ struct UserController: RouteCollection {
 
     @Sendable
     func index(req: Request) async throws -> [UserDTO] {
-        try await User.query(on: req.db).all().map { $0.toDTO() }
+        try await User.query(on: req.db).all().asyncMap { try await $0.toDTO(on: req.db) }
     }
 
     @Sendable
@@ -23,7 +23,7 @@ struct UserController: RouteCollection {
         let user = try req.content.decode(UserDTO.self).toModel()
 
         try await user.save(on: req.db)
-        return user.toDTO()
+        return try await user.toDTO(on: req.db)
     }
     
     @Sendable
@@ -32,7 +32,7 @@ struct UserController: RouteCollection {
             throw Abort(.notFound)
         }
         
-        return user.toDTO()
+        return try await user.toDTO(on: req.db)
     }
 
     @Sendable

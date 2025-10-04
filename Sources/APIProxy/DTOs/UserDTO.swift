@@ -4,6 +4,7 @@ import Vapor
 struct UserDTO: Content {
     var id: UUID?
     var name: String?
+    let projects: [ProjectDTO]?
     
     func toModel() -> User {
         let model = User()
