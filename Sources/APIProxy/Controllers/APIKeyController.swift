@@ -8,6 +8,7 @@ struct APIKeyController: RouteCollection {
         keys.get(use: self.index)
         keys.post(use: self.create)
         keys.group(":keyID") { key in
+            key.get(use: self.get)
             key.delete(use: self.delete)
         }
     }
@@ -47,6 +48,15 @@ struct APIKeyController: RouteCollection {
         dto.userPartialKey = userKey
         
         return dto
+    }
+
+    @Sendable
+    func get(req: Request) async throws -> APIKeySendingDTO {
+        guard let key = try await APIKey.find(req.parameters.get("keyID"), on: req.db) else {
+            throw Abort(.notFound)
+        }
+
+        return key.toDTO()
     }
 
     @Sendable
