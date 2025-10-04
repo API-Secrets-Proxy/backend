@@ -21,7 +21,7 @@ struct ProjectController: RouteCollection {
     @Sendable
     func create(req: Request) async throws -> ProjectDTO {
         let project = try req.content.decode(ProjectDTO.self).toModel()
-        guard let user = try await User.find(req.parameters.get("projectID"), on: req.db) else {
+        guard let user = try await User.find(req.parameters.get("userID"), on: req.db) else {
             throw Abort(.badRequest, reason: "User Not Found")
         }
 
