@@ -8,6 +8,7 @@ struct UserController: RouteCollection {
         users.get(use: self.index)
         users.post(use: self.create)
         users.group(":userID") { user in
+            user.get(use: self.get)
             user.delete(use: self.delete)
         }
     }
@@ -22,6 +23,15 @@ struct UserController: RouteCollection {
         let user = try req.content.decode(UserDTO.self).toModel()
 
         try await user.save(on: req.db)
+        return user.toDTO()
+    }
+    
+    @Sendable
+    func get(req: Request) async throws -> UserDTO {
+        guard let user = try await User.find(req.parameters.get("userID"), on: req.db) else {
+            throw Abort(.notFound)
+        }
+        
         return user.toDTO()
     }
 
