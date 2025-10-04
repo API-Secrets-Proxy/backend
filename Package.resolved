@@ -1,5 +1,5 @@
 {
-  "originHash" : "7d1e7f0d295bef97ef035efab695b5a91698734e841015f28e776926df2fb42f",
+  "originHash" : "e72a4c64b878eb72bd1f505d47b695707ed5d9925b602a89dfd5b0f5e0325a42",
   "pins" : [
     {
       "identity" : "async-http-client",
@@ -53,6 +53,24 @@
       "state" : {
         "revision" : "cd47a7042a529735e401bdfaa070823d151f7f94",
         "version" : "2.11.0"
+      }
+    },
+    {
+      "identity" : "jwt",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/vapor/jwt.git",
+      "state" : {
+        "revision" : "af1c59762d70d1065ddbc0d7902ea9b3dacd1a26",
+        "version" : "5.1.2"
+      }
+    },
+    {
+      "identity" : "jwt-kit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/vapor/jwt-kit.git",
+      "state" : {
+        "revision" : "2033b3e661238dda3d30e36a2d40987499d987de",
+        "version" : "5.2.0"
       }
     },
     {
@@ -296,6 +314,15 @@
       "state" : {
         "revision" : "773ea6a63595ae4f6bc46a366d78769d4cb8b08c",
         "version" : "4.117.0"
+      }
+    },
+    {
+      "identity" : "vapordevicecheck",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Mcrich23/VaporDeviceCheck",
+      "state" : {
+        "revision" : "283ee695077837557e930228e6fcca69671c39ba",
+        "version" : "1.1.3"
       }
     },
     {
