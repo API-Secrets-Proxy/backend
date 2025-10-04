@@ -8,6 +8,7 @@ struct ProjectMigrations: RouteCollection {
         projects.get(use: self.index)
         projects.post(use: self.create)
         projects.group(":projectID") { project in
+            project.get(use: self.get)
             project.delete(use: self.delete)
         }
     }
@@ -27,6 +28,15 @@ struct ProjectMigrations: RouteCollection {
         project.$user.id = try user.requireID()
         
         try await project.save(on: req.db)
+        return try await project.toDTO(on: req.db)
+    }
+
+    @Sendable
+    func get(req: Request) async throws -> ProjectDTO {
+        guard let project = try await Project.find(req.parameters.get("projectID"), on: req.db) else {
+            throw Abort(.notFound)
+        }
+
         return try await project.toDTO(on: req.db)
     }
 
