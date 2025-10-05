@@ -16,7 +16,7 @@ let package = Package(
         // 🔵 Non-blocking, event-driven networking for Swift. Used for custom executors
         .package(url: "https://github.com/apple/swift-nio.git", from: "2.65.0"),
         .package(url: "https://github.com/vapor/jwt.git", from: "5.0.0"),
-        .package(url: "https://github.com/Mcrich23/VaporDeviceCheck", from: "1.1.2"),
+        .package(name: "VaporDeviceCheck", path: "/Users/mcrich/Xcode/Packages/VaporDeviceCheck"),
         .package(url: "https://github.com/apple/swift-crypto", from: "3.0.0"),
     ],
     targets: [
