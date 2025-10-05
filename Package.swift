@@ -17,6 +17,7 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-nio.git", from: "2.65.0"),
         .package(url: "https://github.com/vapor/jwt.git", from: "5.0.0"),
         .package(url: "https://github.com/Mcrich23/VaporDeviceCheck", from: "1.1.2"),
+        .package(url: "https://github.com/apple/swift-crypto", from: "3.0.0"),
     ],
     targets: [
         .executableTarget(
@@ -29,6 +30,7 @@ let package = Package(
                 .product(name: "NIOPosix", package: "swift-nio"),
                 .product(name: "JWT", package: "jwt"),
                 .product(name: "VaporDeviceCheck", package: "VaporDeviceCheck"),
+                .product(name: "Crypto", package: "swift-crypto"),
             ],
             swiftSettings: swiftSettings
         ),

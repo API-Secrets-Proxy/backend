@@ -6,6 +6,11 @@
 //
 
 import Foundation
+#if canImport(Security)
+import Security
+#else
+import Crypto
+#endif
 
 /// Utility to split a key into two partial keys and reconstruct it
 final class KeySplitter {
@@ -18,11 +23,21 @@ final class KeySplitter {
         
         // Generate random server share of the same length
         var randomBytes = [UInt8](repeating: 0, count: keyData.count)
+        
+        #if canImport(Security)
         let status = SecRandomCopyBytes(kSecRandomDefault, randomBytes.count, &randomBytes)
         guard status == errSecSuccess else {
             throw NSError(domain: "KeySplitter", code: 1,
                           userInfo: [NSLocalizedDescriptionKey: "Failed to generate random bytes"])
         }
+        #else
+        // Linux fallback using CryptoKit (secure RNG)
+        var rng = SystemRandomNumberGenerator()
+        for i in 0..<randomBytes.count {
+            randomBytes[i] = UInt8.random(in: 0...255, using: &rng)
+        }
+        #endif
+        
         let serverShare = Data(randomBytes)
         
         // XOR server share with original to produce client share
