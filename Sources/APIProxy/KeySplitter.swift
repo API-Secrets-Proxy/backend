@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import Security
 
 /// Utility to split a key into two partial keys and reconstruct it
 final class KeySplitter {
