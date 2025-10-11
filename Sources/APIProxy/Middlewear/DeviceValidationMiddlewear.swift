@@ -83,5 +83,5 @@ struct DeviceValidationHeaderKeys {
 }
 
 enum DeviceValidationMode: String, Codable, CaseIterable {
-    case deviceCheck
+    case deviceCheck = "device-check"
 }
