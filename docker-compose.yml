@@ -24,10 +24,6 @@ x-shared_environment: &shared_environment
   DATABASE_NAME: vapor_database
   DATABASE_USERNAME: vapor_username
   DATABASE_PASSWORD: vapor_password
-  APPLE_JWT_KID: ${APPLE_JWT_KID}
-  APPLE_JWT_ISS: ${APPLE_JWT_ISS}
-  APPLE_JWT_PRIVATE_KEY: ${APPLE_JWT_PRIVATE_KEY}
-  APPLE_JWT_BYPASS_TOKEN: ${APPLE_JWT_BYPASS_TOKEN}
   
 services:
   app:
