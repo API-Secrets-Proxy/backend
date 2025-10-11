@@ -50,14 +50,15 @@ struct DeviceValidationMiddlewear: AsyncMiddleware {
         let kid = JWKIdentifier(string: key.keyID)
         let privateKey = try ES256PrivateKey(pem: Data(key.secretKey.utf8))
         
+        // Add ECDSA key with JWKIdentifier
+        await request.application.jwt.keys.add(ecdsa: privateKey, kid: kid)
+        
         let deviceCheckMiddlewear = DeviceCheck(
-            jwkKid: .init(string: key.keyID),
+            jwkKid: kid,
             jwkIss: key.teamID,
             excludes: [["health"]],
             bypassTokens: [key.bypassToken]
         )
-        
-        let promise = request.eventLoop.makePromise(of: Response.self)
         
         let deviceCheckEventLoopFuture = deviceCheckMiddlewear.respond(to: request, chainingTo: next)
         
@@ -71,6 +72,7 @@ struct DeviceValidationMiddlewear: AsyncMiddleware {
                 }
             }
         }
+        
         return response
     }
 }
