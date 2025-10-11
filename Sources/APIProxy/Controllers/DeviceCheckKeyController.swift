@@ -32,7 +32,7 @@ struct DeviceCheckKeyController: RouteCollection {
         
         let key: DeviceCheckKey
         
-        if let foundKey = (try? await DeviceCheckKey.query(on: req.db).filter(\.$teamID == dto.keyID).filter(\.$user.$id == user.requireID()).with(\.$user).first()) {
+        if let foundKey = (try? await DeviceCheckKey.query(on: req.db).filter(\.$teamID == dto.teamID).filter(\.$user.$id == user.requireID()).with(\.$user).first()) {
             foundKey.secretKey = dto.privateKey
             foundKey.keyID = dto.keyID
             key = foundKey
