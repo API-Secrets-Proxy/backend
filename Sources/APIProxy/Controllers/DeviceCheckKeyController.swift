@@ -1,5 +1,6 @@
 import Fluent
 import Vapor
+import JWTKit
 
 struct DeviceCheckKeyController: RouteCollection {
     func boot(routes: any RoutesBuilder) throws {
@@ -30,6 +31,10 @@ struct DeviceCheckKeyController: RouteCollection {
         
         let dto = try req.content.decode(DeviceCheckKeyRecievingDTO.self)
         
+        // Validate key is correct form
+        let _ = try ES256PrivateKey(pem: Data(dto.privateKey.utf8))
+        
+        // Update Existing Key or Create New ONe
         let key: DeviceCheckKey
         
         if let foundKey = (try? await DeviceCheckKey.query(on: req.db).filter(\.$teamID == dto.teamID).filter(\.$user.$id == user.requireID()).with(\.$user).first()) {
@@ -40,6 +45,7 @@ struct DeviceCheckKeyController: RouteCollection {
             key = DeviceCheckKey(secretKey: dto.privateKey, keyID: dto.keyID, teamID: dto.teamID)
         }
         
+        // Assign to user and save
         key.$user.id = try user.requireID()
         try await key.save(on: req.db)
         
