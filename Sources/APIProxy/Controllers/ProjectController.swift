@@ -39,6 +39,20 @@ struct ProjectController: RouteCollection {
     /// ## Path Parameters
     /// - userID: The unique identifier of the user
     /// 
+    /// ## Request Body
+    /// Expects a ``ProjectDTO`` object containing:
+    /// - name: The name of the project (optional)
+    /// - description: The description of the project (required)
+    /// - keys: Array of associated API keys (optional)
+    /// 
+    /// ```json
+    /// {
+    ///   "name": "My Project",
+    ///   "description": "Project description",
+    ///   "keys": []
+    /// }
+    /// ```
+    /// 
     /// - Parameters:
     ///   - req: The HTTP request containing the user ID parameter and project data in the request body
     /// - Returns: ``ProjectDTO`` object containing the created project information

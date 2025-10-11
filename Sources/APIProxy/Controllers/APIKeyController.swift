@@ -46,6 +46,20 @@ struct APIKeyController: RouteCollection {
     /// - userID: The unique identifier of the user
     /// - projectID: The unique identifier of the project
     /// 
+    /// ## Request Body
+    /// Expects an ``APIKeyRecievingDTO`` object containing:
+    /// - name: The name of the API key (optional)
+    /// - description: Optional description of the API key
+    /// - apiKey: The full API key to be split and stored (optional)
+    /// 
+    /// ```json
+    /// {
+    ///   "name": "My API Key",
+    ///   "description": "Optional description",
+    ///   "apiKey": "sk-1234567890abcdef..."
+    /// }
+    /// ```
+    /// 
     /// - Parameters:
     ///   - req: The HTTP request containing the user ID, project ID parameters, and API key data in the request body
     /// - Returns: ``APIKeySendingDTO`` object containing the created API key information with the user's partial key

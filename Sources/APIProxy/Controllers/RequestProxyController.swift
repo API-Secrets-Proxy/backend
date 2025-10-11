@@ -25,6 +25,9 @@ struct RequestProxyController: RouteCollection {
     /// Include your partial key in any header by wrapping it like: `%APIProxy_PARTIAL_KEY:<your_partial_key>%`
     /// This will be replaced with the complete key before forwarding to the target service.
     /// 
+    /// ## Request Body
+    /// The request body will be forwarded as-is to the target service. Include any data that the target API expects.
+    /// 
     /// - Parameters:
     ///   - req: The HTTP request containing the proxy headers and request body
     /// - Returns: ``ClientResponse`` from the target service

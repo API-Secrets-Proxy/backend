@@ -16,6 +16,18 @@ struct UserController: RouteCollection {
     /// 
     /// Creates a new user account.
     /// 
+    /// ## Request Body
+    /// Expects a ``UserDTO`` object containing:
+    /// - name: The name of the user (optional)
+    /// - projects: Array of associated projects (optional)
+    /// 
+    /// ```json
+    /// {
+    ///   "name": "John Doe",
+    ///   "projects": []
+    /// }
+    /// ```
+    /// 
     /// - Parameters:
     ///   - req: The HTTP request containing user data in the request body
     /// - Returns: ``UserDTO`` object containing the created user information
