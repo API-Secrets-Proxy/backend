@@ -12,14 +12,22 @@ struct RequestProxyController: RouteCollection {
         keys.post(use: proxyRequest)
     }
 
-    /// Proxies the request sent
-    /// ## Headers
-    ///   - APIProxy_ASSOCIATION_ID: The key id
-    ///   - APIProxy_HTTP_METHOD: The method for the real request
-    ///   - APIProxy_DESTINATION: The real url destination
-    /// ## Including Your Partial Key
-    /// Send your partial key like you would send any other key header to the service, but wrap it like so `%APIProxy_PARTIAL_KEY:<key>%`.
-    /// This will be replaced with the full key and then sent to the real service.
+    /// POST /proxy
+    /// 
+    /// Proxies a request to an external service using a split API key for secure authentication.
+    /// 
+    /// ## Required Headers
+    /// - APIProxy_ASSOCIATION_ID: The API key ID for authentication
+    /// - APIProxy_HTTP_METHOD: The HTTP method for the target request
+    /// - APIProxy_DESTINATION: The destination URL for the proxied request
+    /// 
+    /// ## Partial Key Usage
+    /// Include your partial key in any header by wrapping it like: `%APIProxy_PARTIAL_KEY:<your_partial_key>%`
+    /// This will be replaced with the complete key before forwarding to the target service.
+    /// 
+    /// - Parameters:
+    ///   - req: The HTTP request containing the proxy headers and request body
+    /// - Returns: ``ClientResponse`` from the target service
     @Sendable
     func proxyRequest(req: Request) async throws -> ClientResponse {
         var headers = req.headers

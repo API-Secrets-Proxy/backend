@@ -14,6 +14,16 @@ struct DeviceCheckKeyController: RouteCollection {
         }
     }
 
+    /// GET /users/:userID/device-check
+    /// 
+    /// Retrieves all DeviceCheck keys for a specific user.
+    /// 
+    /// ## Path Parameters
+    /// - userID: The unique identifier of the user
+    /// 
+    /// - Parameters:
+    ///   - req: The HTTP request containing the user ID parameter
+    /// - Returns: Array of ``DeviceCheckKeySendingDTO`` objects containing DeviceCheck key information
     @Sendable
     func index(req: Request) async throws -> [DeviceCheckKeySendingDTO] {
         guard let user = try await User.find(req.parameters.require("userID"), on: req.db) else {
@@ -23,6 +33,16 @@ struct DeviceCheckKeyController: RouteCollection {
         return try await DeviceCheckKey.query(on: req.db).filter(\.$user.$id == user.requireID()).with(\.$user).all().map { $0.toDTO() }
     }
 
+    /// POST /users/:userID/device-check
+    /// 
+    /// Creates or updates a DeviceCheck key for a specific user and team.
+    /// 
+    /// ## Path Parameters
+    /// - userID: The unique identifier of the user
+    /// 
+    /// - Parameters:
+    ///   - req: The HTTP request containing the user ID parameter and DeviceCheck key data in the request body
+    /// - Returns: ``DeviceCheckKeySendingDTO`` object containing the DeviceCheck key information
     @Sendable
     func create(req: Request) async throws -> DeviceCheckKeySendingDTO {
         guard let user = try await User.find(req.parameters.require("userID"), on: req.db) else {
@@ -52,6 +72,17 @@ struct DeviceCheckKeyController: RouteCollection {
         return key.toDTO()
     }
 
+    /// GET /users/:userID/device-check/:teamID
+    /// 
+    /// Retrieves a specific DeviceCheck key by team ID for a user.
+    /// 
+    /// ## Path Parameters
+    /// - userID: The unique identifier of the user
+    /// - teamID: The unique identifier of the Apple Developer team
+    ///
+    /// - Parameters:
+    ///   - req: The HTTP request containing the user ID and team ID parameters
+    /// - Returns: ``DeviceCheckKeySendingDTO`` object containing the DeviceCheck key information
     @Sendable
     func get(req: Request) async throws -> DeviceCheckKeySendingDTO {
         guard let user = try await User.find(req.parameters.require("userID"), on: req.db) else {
@@ -64,6 +95,17 @@ struct DeviceCheckKeyController: RouteCollection {
         return key.toDTO()
     }
 
+    /// DELETE /users/:userID/device-check/:teamID
+    /// 
+    /// Deletes a specific DeviceCheck key by team ID for a user.
+    /// 
+    /// ## Path Parameters
+    /// - userID: The unique identifier of the user
+    /// - teamID: The unique identifier of the Apple Developer team
+    ///
+    /// - Parameters:
+    ///   - req: The HTTP request containing the user ID and team ID parameters
+    /// - Returns: HTTP status code indicating the result of the deletion operation
     @Sendable
     func delete(req: Request) async throws -> HTTPStatus {
         guard let user = try await User.find(req.parameters.require("userID"), on: req.db) else {

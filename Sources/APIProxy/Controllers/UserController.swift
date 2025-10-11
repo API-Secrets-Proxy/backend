@@ -12,6 +12,13 @@ struct UserController: RouteCollection {
         }
     }
 
+    /// POST /users
+    /// 
+    /// Creates a new user account.
+    /// 
+    /// - Parameters:
+    ///   - req: The HTTP request containing user data in the request body
+    /// - Returns: ``UserDTO`` object containing the created user information
     @Sendable
     func create(req: Request) async throws -> UserDTO {
         let user = try req.content.decode(UserDTO.self).toModel()
@@ -20,6 +27,16 @@ struct UserController: RouteCollection {
         return try await user.toDTO(on: req.db)
     }
     
+    /// GET /users/:userID
+    /// 
+    /// Retrieves a specific user by their unique identifier.
+    /// 
+    /// ## Path Parameters
+    /// - userID: The unique identifier of the user
+    /// 
+    /// - Parameters:
+    ///   - req: The HTTP request containing the user ID parameter
+    /// - Returns: ``UserDTO`` object containing the user information
     @Sendable
     func get(req: Request) async throws -> UserDTO {
         guard let user = try await User.find(req.parameters.get("userID"), on: req.db) else {
@@ -29,6 +46,16 @@ struct UserController: RouteCollection {
         return try await user.toDTO(on: req.db)
     }
 
+    /// DELETE /users/:userID
+    /// 
+    /// Deletes a specific user by their unique identifier.
+    /// 
+    /// ## Path Parameters
+    /// - userID: The unique identifier of the user
+    /// 
+    /// - Parameters:
+    ///   - req: The HTTP request containing the user ID parameter
+    /// - Returns: HTTP status code indicating the result of the deletion operation
     @Sendable
     func delete(req: Request) async throws -> HTTPStatus {
         guard let user = try await User.find(req.parameters.get("userID"), on: req.db) else {

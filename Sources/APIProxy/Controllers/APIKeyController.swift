@@ -13,6 +13,17 @@ struct APIKeyController: RouteCollection {
         }
     }
 
+    /// GET /users/:userID/projects/:projectID/keys
+    /// 
+    /// Retrieves all API keys for a specific project belonging to a user.
+    /// 
+    /// ## Path Parameters
+    /// - userID: The unique identifier of the user
+    /// - projectID: The unique identifier of the project
+    /// 
+    /// - Parameters:
+    ///   - req: The HTTP request containing the user ID and project ID parameters
+    /// - Returns: Array of ``APIKeySendingDTO`` objects containing API key information
     @Sendable
     func index(req: Request) async throws -> [APIKeySendingDTO] {
         guard let project = try await Project.find(req.parameters.require("projectID"), on: req.db) else {
@@ -27,6 +38,17 @@ struct APIKeyController: RouteCollection {
         return try await APIKey.query(on: req.db).filter(\.$project.$id == project.requireID()).all().map { $0.toDTO() }
     }
 
+    /// POST /users/:userID/projects/:projectID/keys
+    /// 
+    /// Creates a new API key for a specific project belonging to a user.
+    /// 
+    /// ## Path Parameters
+    /// - userID: The unique identifier of the user
+    /// - projectID: The unique identifier of the project
+    /// 
+    /// - Parameters:
+    ///   - req: The HTTP request containing the user ID, project ID parameters, and API key data in the request body
+    /// - Returns: ``APIKeySendingDTO`` object containing the created API key information with the user's partial key
     @Sendable
     func create(req: Request) async throws -> APIKeySendingDTO {
         let keyDTO = try req.content.decode(APIKeyRecievingDTO.self)
@@ -59,6 +81,18 @@ struct APIKeyController: RouteCollection {
         return dto
     }
 
+    /// GET /users/:userID/projects/:projectID/keys/:keyID
+    /// 
+    /// Retrieves a specific API key by its unique identifier.
+    /// 
+    /// ## Path Parameters
+    /// - userID: The unique identifier of the user
+    /// - projectID: The unique identifier of the project
+    /// - keyID: The unique identifier of the API key
+    /// 
+    /// - Parameters:
+    ///   - req: The HTTP request containing the user ID, project ID, and key ID parameters
+    /// - Returns: ``APIKeySendingDTO`` object containing the API key information
     @Sendable
     func get(req: Request) async throws -> APIKeySendingDTO {
         guard let key = try await APIKey.find(req.parameters.get("keyID"), on: req.db) else {
@@ -68,6 +102,18 @@ struct APIKeyController: RouteCollection {
         return key.toDTO()
     }
 
+    /// DELETE /users/:userID/projects/:projectID/keys/:keyID
+    /// 
+    /// Deletes a specific API key by its unique identifier.
+    /// 
+    /// ## Path Parameters
+    /// - userID: The unique identifier of the user
+    /// - projectID: The unique identifier of the project
+    /// - keyID: The unique identifier of the API key
+    /// 
+    /// - Parameters:
+    ///   - req: The HTTP request containing the user ID, project ID, and key ID parameters
+    /// - Returns: HTTP status code indicating the result of the deletion operation
     @Sendable
     func delete(req: Request) async throws -> HTTPStatus {
         guard let key = try await APIKey.find(req.parameters.get("keyID"), on: req.db) else {
