@@ -7,15 +7,9 @@ import Vapor
 public func configure(_ app: Application) async throws {
     // uncomment to serve files from /Public folder
     // app.middleware.use(FileMiddleware(publicDirectory: app.directory.publicDirectory))
-    let corsConfiguration = CORSMiddleware.Configuration(
-        allowedOrigin: .any(["http://127.0.0.1:5500"]),
-        allowedMethods: [.GET, .POST, .PUT, .OPTIONS, .DELETE, .PATCH],
-        allowedHeaders: [.accept, .authorization, .contentType, .origin, .xRequestedWith, .userAgent, .accessControlAllowOrigin]
-    )
-    let cors = CORSMiddleware(configuration: corsConfiguration)
+    
     // cors middleware should come before default error middleware using `at: .beginning`
-    app.middleware.use(cors, at: .beginning)
-    try await configureDeviceCheck(app)
+    app.middleware.use(corsMiddlewear, at: .beginning)
     
     app.databases.use(DatabaseConfigurationFactory.postgres(configuration: .init(
         hostname: Environment.get("DATABASE_HOST") ?? "localhost",
@@ -29,6 +23,7 @@ public func configure(_ app: Application) async throws {
     app.migrations.add(User.migrations)
     app.migrations.add(Project.migrations)
     app.migrations.add(APIKey.migrations)
+    app.migrations.add(DeviceCheckKey.migrations)
     try await app.autoMigrate()
 
     // register routes

@@ -15,6 +15,9 @@ final class User: Model, @unchecked Sendable {
     
     @Children(for: \.$user)
     var projects: [Project]
+    
+    @Children(for: \.$user)
+    var deviceCheckKeys: [DeviceCheckKey]
 
     init() { }
 
