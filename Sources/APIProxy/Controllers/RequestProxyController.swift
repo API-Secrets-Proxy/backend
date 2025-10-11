@@ -52,12 +52,11 @@ struct RequestProxyController: RouteCollection {
     }
 }
 
-private struct ProxyHeaderKeys {
+struct ProxyHeaderKeys {
     static let associationId = "APIProxy_ASSOCIATION_ID"
     static let httpMethod = "APIProxy_HTTP_METHOD"
     static let destination = "APIProxy_DESTINATION"
     static let partialKeyIdentifier = "%APIProxy_PARTIAL_KEY:"
-    
 }
 
 private enum ProxyError: Error {

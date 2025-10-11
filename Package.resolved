@@ -1,5 +1,5 @@
 {
-  "originHash" : "e61baf4bdf4877e9fdf092b33e87a8dabd454b0606a3d1a245c5ddd88c509f64",
+  "originHash" : "e25b43e960dddf5d22a550361e6c8529b232b500505a9ebcdf14f08c0b4f8485",
   "pins" : [
     {
       "identity" : "async-http-client",
@@ -314,6 +314,15 @@
       "state" : {
         "revision" : "773ea6a63595ae4f6bc46a366d78769d4cb8b08c",
         "version" : "4.117.0"
+      }
+    },
+    {
+      "identity" : "vapordevicecheck",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/mcrich23/vapordevicecheck.git",
+      "state" : {
+        "revision" : "3e158c23015856d3e2925875202634cc5e6965e7",
+        "version" : "1.1.5"
       }
     },
     {
