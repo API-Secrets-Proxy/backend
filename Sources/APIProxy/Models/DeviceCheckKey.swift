@@ -13,10 +13,10 @@ final class DeviceCheckKey: Model, @unchecked Sendable {
     @Field(key: "secret_key")
     var secretKey: String
 
-    @Field(key: "keyID")
+    @Field(key: "key_id")
     var keyID: String
 
-    @Field(key: "teamID")
+    @Field(key: "team_id")
     var teamID: String
 
     @Field(key: "bypass_token")
