@@ -48,15 +48,15 @@ struct APIKeyController: RouteCollection {
     /// 
     /// ## Request Body
     /// Expects an ``APIKeyRecievingDTO`` object containing:
-    /// - name: The name of the API key (optional)
-    /// - description: Optional description of the API key
-    /// - apiKey: The full API key to be split and stored (optional)
+    /// - name: The name of the API key
+    /// - apiKey: The full API key to be split and stored
+    /// - description: Optional description of the API key (optional)
     /// 
     /// ```json
     /// {
     ///   "name": "My API Key",
-    ///   "description": "Optional description",
-    ///   "apiKey": "sk-1234567890abcdef..."
+    ///   "apiKey": "sk-1234567890abcdef...",
+    ///   "description": "Optional description"
     /// }
     /// ```
     /// 
@@ -67,17 +67,9 @@ struct APIKeyController: RouteCollection {
     func create(req: Request) async throws -> APIKeySendingDTO {
         let keyDTO = try req.content.decode(APIKeyRecievingDTO.self)
         
-        guard let name = keyDTO.name else {
-            throw Abort(.badRequest, reason: "Name not specified")
-        }
+        let (userKey, dbKey) = try KeySplitter.split(key: keyDTO.apiKey)
         
-        guard let apiKey = keyDTO.apiKey else {
-            throw Abort(.badRequest, reason: "API key not included")
-        }
-        
-        let (userKey, dbKey) = try KeySplitter.split(key: apiKey)
-        
-        let key = APIKey(name: name, description: keyDTO.description ?? "", partialKey: dbKey)
+        let key = APIKey(name: keyDTO.name, description: keyDTO.description ?? "", partialKey: dbKey)
         
         guard let project = try await Project.find(req.parameters.get("projectID"), on: req.db) else {
             throw Abort(.badRequest, reason: "Project Not Found")
