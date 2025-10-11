@@ -20,7 +20,7 @@ struct APIKeyController: RouteCollection {
         }
         try await project.$user.load(on: req.db)
         let user = try await project.$user.get(on: req.db)
-        guard try user.requireID() == req.parameters.get("useerID") else {
+        guard try user.requireID() == req.parameters.get("userID") else {
             throw Abort(.unauthorized)
         }
         
