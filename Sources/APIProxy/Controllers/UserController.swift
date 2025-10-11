@@ -5,17 +5,11 @@ struct UserController: RouteCollection {
     func boot(routes: any RoutesBuilder) throws {
         let users = routes.grouped("users")
 
-        users.get(use: self.index)
         users.post(use: self.create)
         users.group(":userID") { user in
             user.get(use: self.get)
             user.delete(use: self.delete)
         }
-    }
-
-    @Sendable
-    func index(req: Request) async throws -> [UserDTO] {
-        try await User.query(on: req.db).all().asyncMap { try await $0.toDTO(on: req.db) }
     }
 
     @Sendable

@@ -15,7 +15,11 @@ struct ProjectController: RouteCollection {
 
     @Sendable
     func index(req: Request) async throws -> [ProjectDTO] {
-        try await Project.query(on: req.db).all().asyncMap { try await $0.toDTO(on: req.db) }
+        guard let user = try await User.find(req.parameters.require("userID"), on: req.db) else {
+            throw Abort(.unauthorized)
+        }
+        
+        return try await Project.query(on: req.db).filter(\.$user.$id == user.requireID()).all().asyncMap { try await $0.toDTO(on: req.db) }
     }
 
     @Sendable

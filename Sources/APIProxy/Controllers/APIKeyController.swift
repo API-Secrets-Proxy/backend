@@ -15,7 +15,16 @@ struct APIKeyController: RouteCollection {
 
     @Sendable
     func index(req: Request) async throws -> [APIKeySendingDTO] {
-        try await APIKey.query(on: req.db).all().map { $0.toDTO() }
+        guard let project = try await Project.find(req.parameters.require("projectID"), on: req.db) else {
+            throw Abort(.unauthorized)
+        }
+        try await project.$user.load(on: req.db)
+        let user = try await project.$user.get(on: req.db)
+        guard try user.requireID() == req.parameters.get("useerID") else {
+            throw Abort(.unauthorized)
+        }
+        
+        return try await APIKey.query(on: req.db).filter(\.$project.$id == project.requireID()).all().map { $0.toDTO() }
     }
 
     @Sendable
