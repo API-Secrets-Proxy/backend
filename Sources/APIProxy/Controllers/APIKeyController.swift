@@ -66,6 +66,6 @@ struct APIKeyController: RouteCollection {
         }
 
         try await key.delete(on: req.db)
-        return .noContent
+        return .accepted
     }
 }

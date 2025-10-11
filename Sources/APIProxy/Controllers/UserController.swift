@@ -42,6 +42,6 @@ struct UserController: RouteCollection {
         }
 
         try await user.delete(on: req.db)
-        return .noContent
+        return .accepted
     }
 }

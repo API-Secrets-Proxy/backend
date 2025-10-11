@@ -27,7 +27,7 @@ final class DeviceCheckKey: Model, @unchecked Sendable {
     
     init() { }
 
-    init(id: UUID? = nil, secretKey: String, keyID: String, teamID: String, bypassToken: String) {
+    init(id: UUID? = nil, secretKey: String, keyID: String, teamID: String, bypassToken: String = UUID().uuidString) {
         self.id = id
         self.secretKey = secretKey
         self.keyID = keyID

@@ -47,6 +47,6 @@ struct ProjectController: RouteCollection {
         }
 
         try await project.delete(on: req.db)
-        return .noContent
+        return .accepted
     }
 }
