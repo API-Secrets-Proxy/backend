@@ -9,10 +9,12 @@ app.get { req async in
     app.get("hello") { req async -> String in
         "Hello, world!"
     }
-
-    try app.grouped(ClerkAuthenticator()).register(collection: UserController())
-    try app.register(collection: APIKeyController())
-    try app.register(collection: ProjectController())
+    
     try app.grouped(DeviceValidationMiddlewear()).register(collection: RequestProxyController())
-    try app.register(collection: DeviceCheckKeyController())
+    let authenticatedRouters = app.grouped(ClerkAuthenticator())
+    
+    try authenticatedRouters.register(collection: UserController())
+    try authenticatedRouters.register(collection: APIKeyController())
+    try authenticatedRouters.register(collection: ProjectController())
+    try authenticatedRouters.register(collection: DeviceCheckKeyController())
 }
