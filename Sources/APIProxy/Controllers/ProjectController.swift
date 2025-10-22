@@ -3,7 +3,7 @@ import Vapor
 
 struct ProjectController: RouteCollection {
     func boot(routes: any RoutesBuilder) throws {
-        let projects = routes.grouped("users", ":userID", "projects")
+        let projects = routes.grouped("me", "projects")
 
         projects.get(use: self.index)
         projects.post(use: self.create)
@@ -13,32 +13,30 @@ struct ProjectController: RouteCollection {
         }
     }
 
-    /// GET /users/:userID/projects
+    /// GET /me/projects
     /// 
     /// Retrieves all projects belonging to a specific user.
     /// 
-    /// ## Path Parameters
-    /// - userID: The unique identifier of the user
-    /// 
+    /// ## Request Headers
+    /// Expects a bearer token object from Clerk. More information here: https://clerk.com/docs/react/reference/hooks/use-auth
+    ///
     /// - Parameters:
     ///   - req: The HTTP request containing the user ID parameter
     /// - Returns: Array of ``ProjectDTO`` objects containing project information
     @Sendable
     func index(req: Request) async throws -> [ProjectDTO] {
-        guard let user = try await User.find(req.parameters.require("userID"), on: req.db) else {
-            throw Abort(.unauthorized)
-        }
+        let user = try req.auth.require(User.self)
         
         return try await Project.query(on: req.db).filter(\.$user.$id == user.requireID()).all().asyncMap { try await $0.toDTO(on: req.db) }
     }
 
-    /// POST /users/:userID/projects
+    /// POST /me/projects
     /// 
     /// Creates a new project for a specific user.
     /// 
-    /// ## Path Parameters
-    /// - userID: The unique identifier of the user
-    /// 
+    /// ## Request Headers
+    /// Expects a bearer token object from Clerk. More information here: https://clerk.com/docs/react/reference/hooks/use-auth
+    ///
     /// ## Request Body
     /// Expects a ``ProjectDTO`` object containing:
     /// - name: The name of the project (optional)
@@ -59,9 +57,7 @@ struct ProjectController: RouteCollection {
     @Sendable
     func create(req: Request) async throws -> ProjectDTO {
         let project = try req.content.decode(ProjectDTO.self).toModel()
-        guard let user = try await User.find(req.parameters.get("userID"), on: req.db) else {
-            throw Abort(.badRequest, reason: "User Not Found")
-        }
+        let user = try req.auth.require(User.self)
 
         project.$user.id = try user.requireID()
         
@@ -69,12 +65,14 @@ struct ProjectController: RouteCollection {
         return try await project.toDTO(on: req.db)
     }
 
-    /// GET /users/:userID/projects/:projectID
+    /// GET /me/projects/:projectID
     /// 
     /// Retrieves a specific project by its unique identifier.
     /// 
+    /// ## Request Headers
+    /// Expects a bearer token object from Clerk. More information here: https://clerk.com/docs/react/reference/hooks/use-auth
+    ///
     /// ## Path Parameters
-    /// - userID: The unique identifier of the user
     /// - projectID: The unique identifier of the project
     /// 
     /// - Parameters:
@@ -82,19 +80,24 @@ struct ProjectController: RouteCollection {
     /// - Returns: ``ProjectDTO`` object containing the project information
     @Sendable
     func get(req: Request) async throws -> ProjectDTO {
-        guard let project = try await Project.find(req.parameters.get("projectID"), on: req.db) else {
+        let user = try req.auth.require(User.self)
+        
+        guard let projectID = req.parameters.get("projectID", as: UUID.self),
+              let project = try await Project.query(on: req.db).filter(\.$id == projectID).filter(\.$user.$id == user.requireID()).with(\.$user).first() else {
             throw Abort(.notFound)
         }
 
         return try await project.toDTO(on: req.db)
     }
 
-    /// DELETE /users/:userID/projects/:projectID
+    /// DELETE /me/projects/:projectID
     /// 
     /// Deletes a specific project by its unique identifier.
-    /// 
+    ///
+    /// ## Request Headers
+    /// Expects a bearer token object from Clerk. More information here: https://clerk.com/docs/react/reference/hooks/use-auth
+    ///
     /// ## Path Parameters
-    /// - userID: The unique identifier of the user
     /// - projectID: The unique identifier of the project
     /// 
     /// - Parameters:
@@ -102,7 +105,10 @@ struct ProjectController: RouteCollection {
     /// - Returns: HTTP status code indicating the result of the deletion operation
     @Sendable
     func delete(req: Request) async throws -> HTTPStatus {
-        guard let project = try await Project.find(req.parameters.get("projectID"), on: req.db) else {
+        let user = try req.auth.require(User.self)
+        
+        guard let projectID = req.parameters.get("projectID", as: UUID.self),
+              let project = try await Project.query(on: req.db).filter(\.$id == projectID).filter(\.$user.$id == user.requireID()).with(\.$user).first() else {
             throw Abort(.notFound)
         }
 

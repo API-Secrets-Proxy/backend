@@ -3,7 +3,7 @@ import Vapor
 
 struct APIKeyController: RouteCollection {
     func boot(routes: any RoutesBuilder) throws {
-        let keys = routes.grouped("users", ":userID", "projects", ":projectID", "keys")
+        let keys = routes.grouped("me", "projects", ":projectID", "keys")
 
         keys.get(use: self.index)
         keys.post(use: self.create)
@@ -13,12 +13,14 @@ struct APIKeyController: RouteCollection {
         }
     }
 
-    /// GET /users/:userID/projects/:projectID/keys
-    /// 
+    /// GET /me/projects/:projectID/keys
+    ///
     /// Retrieves all API keys for a specific project belonging to a user.
-    /// 
+    ///
+    /// ## Request Headers
+    /// Expects a bearer token object from Clerk. More information here: https://clerk.com/docs/react/reference/hooks/use-auth
+    ///
     /// ## Path Parameters
-    /// - userID: The unique identifier of the user
     /// - projectID: The unique identifier of the project
     /// 
     /// - Parameters:
@@ -26,26 +28,27 @@ struct APIKeyController: RouteCollection {
     /// - Returns: Array of ``APIKeySendingDTO`` objects containing API key information
     @Sendable
     func index(req: Request) async throws -> [APIKeySendingDTO] {
-        guard let project = try await Project.find(req.parameters.require("projectID"), on: req.db) else {
-            throw Abort(.unauthorized)
-        }
-        try await project.$user.load(on: req.db)
-        let user = try await project.$user.get(on: req.db)
-        guard try user.requireID() == req.parameters.get("userID") else {
-            throw Abort(.unauthorized)
+        let user = try req.auth.require(User.self)
+        
+        guard let projectIDString = req.parameters.get("projectID"),
+                let projectID = UUID(uuidString: projectIDString),
+              let project = try await Project.query(on: req.db).filter(\.$id == projectID).filter(\.$user.$id == user.requireID()).with(\.$user).first() else {
+            throw Abort(.notFound)
         }
         
         return try await APIKey.query(on: req.db).filter(\.$project.$id == project.requireID()).all().map { $0.toDTO() }
     }
 
-    /// POST /users/:userID/projects/:projectID/keys
-    /// 
+    /// POST /me/projects/:projectID/keys
+    ///
     /// Creates a new API key for a specific project belonging to a user.
     /// 
     /// ## Path Parameters
-    /// - userID: The unique identifier of the user
     /// - projectID: The unique identifier of the project
-    /// 
+    ///
+    /// ## Request Headers
+    /// Expects a bearer token object from Clerk. More information here: https://clerk.com/docs/react/reference/hooks/use-auth
+    ///
     /// ## Request Body
     /// Expects an ``APIKeyRecievingDTO`` object containing:
     /// - name: The name of the API key
@@ -71,8 +74,12 @@ struct APIKeyController: RouteCollection {
         
         let key = APIKey(name: keyDTO.name, description: keyDTO.description ?? "", partialKey: dbKey)
         
-        guard let project = try await Project.find(req.parameters.get("projectID"), on: req.db) else {
-            throw Abort(.badRequest, reason: "Project Not Found")
+        let user = try req.auth.require(User.self)
+        
+        guard let projectIDString = req.parameters.get("projectID"),
+                let projectID = UUID(uuidString: projectIDString),
+              let project = try await Project.query(on: req.db).filter(\.$id == projectID).filter(\.$user.$id == user.requireID()).with(\.$user).first() else {
+            throw Abort(.notFound)
         }
 
         key.$project.id = try project.requireID()
@@ -87,42 +94,62 @@ struct APIKeyController: RouteCollection {
         return dto
     }
 
-    /// GET /users/:userID/projects/:projectID/keys/:keyID
-    /// 
+    /// GET /me/projects/:projectID/keys/:keyID
+    ///
     /// Retrieves a specific API key by its unique identifier.
     /// 
     /// ## Path Parameters
-    /// - userID: The unique identifier of the user
     /// - projectID: The unique identifier of the project
     /// - keyID: The unique identifier of the API key
-    /// 
+    ///
+    /// ## Request Headers
+    /// Expects a bearer token object from Clerk. More information here: https://clerk.com/docs/react/reference/hooks/use-auth
+    ///
     /// - Parameters:
     ///   - req: The HTTP request containing the user ID, project ID, and key ID parameters
     /// - Returns: ``APIKeySendingDTO`` object containing the API key information
     @Sendable
     func get(req: Request) async throws -> APIKeySendingDTO {
-        guard let key = try await APIKey.find(req.parameters.get("keyID"), on: req.db) else {
+        let user = try req.auth.require(User.self)
+        
+        guard let projectID = req.parameters.get("projectID", as: UUID.self),
+              let project = try await Project.query(on: req.db).filter(\.$id == projectID).filter(\.$user.$id == user.requireID()).with(\.$user).first() else {
+            throw Abort(.notFound)
+        }
+
+        guard let keyID = req.parameters.get("keyID", as: UUID.self),
+              let key = try await APIKey.query(on: req.db).filter(\.$id == keyID).filter(\.$project.$id == project.requireID()).with(\.$project).first() else {
             throw Abort(.notFound)
         }
 
         return key.toDTO()
     }
 
-    /// DELETE /users/:userID/projects/:projectID/keys/:keyID
-    /// 
+    /// DELETE /me/projects/:projectID/keys/:keyID
+    ///
     /// Deletes a specific API key by its unique identifier.
     /// 
     /// ## Path Parameters
-    /// - userID: The unique identifier of the user
     /// - projectID: The unique identifier of the project
     /// - keyID: The unique identifier of the API key
-    /// 
+    ///
+    /// ## Request Headers
+    /// Expects a bearer token object from Clerk. More information here: https://clerk.com/docs/react/reference/hooks/use-auth
+    ///
     /// - Parameters:
     ///   - req: The HTTP request containing the user ID, project ID, and key ID parameters
     /// - Returns: HTTP status code indicating the result of the deletion operation
     @Sendable
     func delete(req: Request) async throws -> HTTPStatus {
-        guard let key = try await APIKey.find(req.parameters.get("keyID"), on: req.db) else {
+        let user = try req.auth.require(User.self)
+        
+        guard let projectID = req.parameters.get("projectID", as: UUID.self),
+              let project = try await Project.query(on: req.db).filter(\.$id == projectID).filter(\.$user.$id == user.requireID()).with(\.$user).first() else {
+            throw Abort(.notFound)
+        }
+
+        guard let keyID = req.parameters.get("keyID", as: UUID.self),
+              let key = try await APIKey.query(on: req.db).filter(\.$id == keyID).filter(\.$project.$id == project.requireID()).with(\.$project).first() else {
             throw Abort(.notFound)
         }
 

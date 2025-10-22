@@ -22,8 +22,9 @@ final class User: Model, Authenticatable, @unchecked Sendable {
 
     init() { }
 
-    init(id: UUID? = nil) {
+    init(id: UUID? = nil, clerkID: String) {
         self.id = id
+        self.clerkID = clerkID
     }
     
     func toDTO(on db: any Database) async throws -> UserDTO {

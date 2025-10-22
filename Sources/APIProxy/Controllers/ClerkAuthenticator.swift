@@ -26,7 +26,7 @@ struct ClerkAuthenticator: AsyncBearerAuthenticator {
     
     func authenticate(bearer: BearerAuthorization, for request: Request) async throws {
         do {
-            let claims = try await verifyClerkToken(bearer.token, on: request)
+            let claims = try await Self.verifyClerkToken(bearer.token, on: request)
             
             guard let user = try await User.query(on: request.db).filter(\.$clerkID == claims.id).first() else {
                 throw Errors.userNotFound
@@ -37,7 +37,7 @@ struct ClerkAuthenticator: AsyncBearerAuthenticator {
         }
     }
     
-    private func verifyClerkToken(_ token: String, on req: Request) async throws -> ClerkClaims {
+    static func verifyClerkToken(_ token: String, on req: Request) async throws -> ClerkClaims {
         // Fetch Clerk JWKS
         let jwksURL = URI(string: "https://fit-quail-72.clerk.accounts.dev/.well-known/jwks.json")
         let jwks = try await req.client.get(jwksURL).content.decode(JWKS.self)
