@@ -6,6 +6,7 @@ struct UserController: RouteCollection {
         let users = routes.grouped("users")
 
         users.post(use: self.create)
+        users.get(use: self.create)
         users.group(":userID") { user in
             user.get(use: self.get)
             user.delete(use: self.delete)
@@ -33,7 +34,7 @@ struct UserController: RouteCollection {
     /// - Returns: ``UserDTO`` object containing the created user information
     @Sendable
     func create(req: Request) async throws -> UserDTO {
-        let user = try req.content.decode(UserDTO.self).toModel()
+        let user = try req.auth.require(User.self)
 
         try await user.save(on: req.db)
         return try await user.toDTO(on: req.db)

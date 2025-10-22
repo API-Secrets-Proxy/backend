@@ -1,17 +1,18 @@
 import Fluent
+import Vapor
 import struct Foundation.UUID
 
 /// Property wrappers interact poorly with `Sendable` checking, causing a warning for the `@ID` property
 /// It is recommended you write your model with sendability checking on and then suppress the warning
 /// afterwards with `@unchecked Sendable`.
-final class User: Model, @unchecked Sendable {
+final class User: Model, Authenticatable, @unchecked Sendable {
     static let schema = "users"
     
-    @ID(key: .id)
+    @ID
     var id: UUID?
-
-    @Field(key: "name")
-    var name: String
+    
+    @Field(key: "clerk_id")
+    var clerkID: String
     
     @Children(for: \.$user)
     var projects: [Project]
@@ -21,9 +22,8 @@ final class User: Model, @unchecked Sendable {
 
     init() { }
 
-    init(id: UUID? = nil, name: String) {
+    init(id: UUID? = nil) {
         self.id = id
-        self.name = name
     }
     
     func toDTO(on db: any Database) async throws -> UserDTO {
@@ -32,8 +32,7 @@ final class User: Model, @unchecked Sendable {
         let projectsDTOs = try await projects.asyncMap({ try await $0.toDTO(on: db) })
         
         return .init(
-            id: self.id,
-            name: self.name,
+            id: self.clerkID,
             projects: projectsDTOs
         )
     }

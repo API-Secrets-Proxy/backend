@@ -10,7 +10,7 @@ app.get { req async in
         "Hello, world!"
     }
 
-    try app.register(collection: UserController())
+    try app.grouped(ClerkAuthenticator()).register(collection: UserController())
     try app.register(collection: APIKeyController())
     try app.register(collection: ProjectController())
     try app.grouped(DeviceValidationMiddlewear()).register(collection: RequestProxyController())
