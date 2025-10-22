@@ -109,11 +109,11 @@ struct DeviceCheckKeyController: RouteCollection {
     ///
     /// Deletes a specific DeviceCheck key by team ID for a user.
     ///
+    /// ## Path Parameters
+    /// - teamID: The unique identifier of the Apple Developer team 
+    ///
     /// ## Request Headers
     /// Expects a bearer token object from Clerk. More information here: https://clerk.com/docs/react/reference/hooks/use-auth
-    /// 
-    /// ## Path Parameters
-    /// - teamID: The unique identifier of the Apple Developer team
     ///
     /// - Parameters:
     ///   - req: The HTTP request containing the user ID and team ID parameters

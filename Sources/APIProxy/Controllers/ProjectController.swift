@@ -68,12 +68,12 @@ struct ProjectController: RouteCollection {
     /// GET /me/projects/:projectID
     /// 
     /// Retrieves a specific project by its unique identifier.
-    /// 
-    /// ## Request Headers
-    /// Expects a bearer token object from Clerk. More information here: https://clerk.com/docs/react/reference/hooks/use-auth
     ///
     /// ## Path Parameters
     /// - projectID: The unique identifier of the project
+    ///
+    /// ## Request Headers
+    /// Expects a bearer token object from Clerk. More information here: https://clerk.com/docs/react/reference/hooks/use-auth
     /// 
     /// - Parameters:
     ///   - req: The HTTP request containing the user ID and project ID parameters
@@ -94,11 +94,11 @@ struct ProjectController: RouteCollection {
     /// 
     /// Deletes a specific project by its unique identifier.
     ///
+    /// ## Path Parameters
+    /// - projectID: The unique identifier of the project 
+    ///
     /// ## Request Headers
     /// Expects a bearer token object from Clerk. More information here: https://clerk.com/docs/react/reference/hooks/use-auth
-    ///
-    /// ## Path Parameters
-    /// - projectID: The unique identifier of the project
     /// 
     /// - Parameters:
     ///   - req: The HTTP request containing the user ID and project ID parameters

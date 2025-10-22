@@ -17,11 +17,11 @@ struct APIKeyController: RouteCollection {
     ///
     /// Retrieves all API keys for a specific project belonging to a user.
     ///
+    /// ## Path Parameters
+    /// - projectID: The unique identifier of the project 
+    ///
     /// ## Request Headers
     /// Expects a bearer token object from Clerk. More information here: https://clerk.com/docs/react/reference/hooks/use-auth
-    ///
-    /// ## Path Parameters
-    /// - projectID: The unique identifier of the project
     /// 
     /// - Parameters:
     ///   - req: The HTTP request containing the user ID and project ID parameters
