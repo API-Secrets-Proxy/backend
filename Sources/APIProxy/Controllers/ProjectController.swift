@@ -17,8 +17,8 @@ struct ProjectController: RouteCollection {
     /// 
     /// Retrieves all projects belonging to a specific user.
     /// 
-    /// ## Request Headers
-    /// Expects a bearer token object from Clerk. More information here: https://clerk.com/docs/react/reference/hooks/use-auth
+    /// ## Required Headers
+    /// - Expects a bearer token object from Clerk. More information here: https://clerk.com/docs/react/reference/hooks/use-auth
     ///
     /// - Parameters:
     ///   - req: The HTTP request containing the user ID parameter
@@ -34,8 +34,8 @@ struct ProjectController: RouteCollection {
     /// 
     /// Creates a new project for a specific user.
     /// 
-    /// ## Request Headers
-    /// Expects a bearer token object from Clerk. More information here: https://clerk.com/docs/react/reference/hooks/use-auth
+    /// ## Required Headers
+    /// - Expects a bearer token object from Clerk. More information here: https://clerk.com/docs/react/reference/hooks/use-auth
     ///
     /// ## Request Body
     /// Expects a ``ProjectDTO`` object containing:
@@ -72,8 +72,8 @@ struct ProjectController: RouteCollection {
     /// ## Path Parameters
     /// - projectID: The unique identifier of the project
     ///
-    /// ## Request Headers
-    /// Expects a bearer token object from Clerk. More information here: https://clerk.com/docs/react/reference/hooks/use-auth
+    /// ## Required Headers
+    /// - Expects a bearer token object from Clerk. More information here: https://clerk.com/docs/react/reference/hooks/use-auth
     /// 
     /// - Parameters:
     ///   - req: The HTTP request containing the user ID and project ID parameters
@@ -97,8 +97,8 @@ struct ProjectController: RouteCollection {
     /// ## Path Parameters
     /// - projectID: The unique identifier of the project 
     ///
-    /// ## Request Headers
-    /// Expects a bearer token object from Clerk. More information here: https://clerk.com/docs/react/reference/hooks/use-auth
+    /// ## Required Headers
+    /// - Expects a bearer token object from Clerk. More information here: https://clerk.com/docs/react/reference/hooks/use-auth
     /// 
     /// - Parameters:
     ///   - req: The HTTP request containing the user ID and project ID parameters

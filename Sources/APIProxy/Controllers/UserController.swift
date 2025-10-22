@@ -13,8 +13,8 @@ struct UserController: RouteCollection {
     ///
     /// Creates a new user account.
     /// 
-    /// ## Request Headers
-    /// Expects a bearer token object from Clerk. More information here: https://clerk.com/docs/react/reference/hooks/use-auth
+    /// ## Required Headers
+    /// - Expects a bearer token object from Clerk. More information here: https://clerk.com/docs/react/reference/hooks/use-auth
     ///
     /// - Parameters:
     ///   - req: The HTTP request containing user data in the request body
@@ -41,8 +41,8 @@ struct UserController: RouteCollection {
     ///
     /// Retrieves a specific user by their bearer token.
     ///
-    /// ## Request Headers
-    /// Expects a bearer token object from Clerk. More information here: https://clerk.com/docs/react/reference/hooks/use-auth
+    /// ## Required Headers
+    /// - Expects a bearer token object from Clerk. More information here: https://clerk.com/docs/react/reference/hooks/use-auth
     ///
     /// - Parameters:
     ///   - req: The HTTP request containing the user ID parameter
@@ -58,8 +58,8 @@ struct UserController: RouteCollection {
     ///
     /// Deletes a specific user by their bearer token.
     /// 
-    /// ## Request Headers
-    /// Expects a bearer token object from Clerk. More information here: https://clerk.com/docs/react/reference/hooks/use-auth
+    /// ## Required Headers
+    /// - Expects a bearer token object from Clerk. More information here: https://clerk.com/docs/react/reference/hooks/use-auth
     ///
     /// - Parameters:
     ///   - req: The HTTP request containing the user ID parameter

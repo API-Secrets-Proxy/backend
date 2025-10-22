@@ -18,8 +18,8 @@ struct DeviceCheckKeyController: RouteCollection {
     ///
     /// Retrieves all DeviceCheck keys for a specific user.
     /// 
-    /// ## Request Headers
-    /// Expects a bearer token object from Clerk. More information here: https://clerk.com/docs/react/reference/hooks/use-auth
+    /// ## Required Headers
+    /// - Expects a bearer token object from Clerk. More information here: https://clerk.com/docs/react/reference/hooks/use-auth
     ///
     /// - Parameters:
     ///   - req: The HTTP request containing the user ID parameter
@@ -35,8 +35,8 @@ struct DeviceCheckKeyController: RouteCollection {
     ///
     /// Creates or updates a DeviceCheck key for a specific user and team.
     /// 
-    /// ## Request Headers
-    /// Expects a bearer token object from Clerk. More information here: https://clerk.com/docs/react/reference/hooks/use-auth
+    /// ## Required Headers
+    /// - Expects a bearer token object from Clerk. More information here: https://clerk.com/docs/react/reference/hooks/use-auth
     ///
     /// ## Request Body
     /// Expects a ``DeviceCheckKeyRecievingDTO`` object containing:
@@ -86,8 +86,8 @@ struct DeviceCheckKeyController: RouteCollection {
     ///
     /// Retrieves a specific DeviceCheck key by team ID for a user.
     ///
-    /// ## Request Headers
-    /// Expects a bearer token object from Clerk. More information here: https://clerk.com/docs/react/reference/hooks/use-auth
+    /// ## Required Headers
+    /// - Expects a bearer token object from Clerk. More information here: https://clerk.com/docs/react/reference/hooks/use-auth
     ///
     /// ## Path Parameters
     /// - teamID: The unique identifier of the Apple Developer team
@@ -112,8 +112,8 @@ struct DeviceCheckKeyController: RouteCollection {
     /// ## Path Parameters
     /// - teamID: The unique identifier of the Apple Developer team 
     ///
-    /// ## Request Headers
-    /// Expects a bearer token object from Clerk. More information here: https://clerk.com/docs/react/reference/hooks/use-auth
+    /// ## Required Headers
+    /// - Expects a bearer token object from Clerk. More information here: https://clerk.com/docs/react/reference/hooks/use-auth
     ///
     /// - Parameters:
     ///   - req: The HTTP request containing the user ID and team ID parameters
