@@ -21,6 +21,10 @@ struct UserController: RouteCollection {
     /// - Returns: ``UserDTO`` object containing the created user information
     @Sendable
     func create(req: Request) async throws -> UserDTO {
+        if let user = (try? req.auth.require(User.self)) {
+            return try await user.toDTO(on: req.db)
+        }
+        
         guard let bearer = req.headers.bearerAuthorization else {
             throw Abort(.unauthorized)
         }
